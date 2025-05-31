@@ -4,73 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center">Task Manager</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4"> Task Manager</h1>
 
         <!-- Task Form -->
-        <div class="card mt-4">
-            <div class="card-body">
-                <form action="/add" method="POST" class="row g-3">
-                    <div class="col-md-5">
-                        <input type="text" name="task" class="form-control" placeholder="Enter Task" required>
-                    </div>
-                    <div class="col-md-2">
-                        <select name="category" class="form-select">
-                            <option value="Work">Work</option>
-                            <option value="Personal">Personal</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select name="priority" class="form-select">
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary w-100">Add Task</button>
-                    </div>
-                </form>
+        <form action="/add" method="POST" class="row g-3 mb-4">
+            <div class="col-md-3">
+                <input type="text" name="task" class="form-control" placeholder="Enter Task" required>
             </div>
-        </div>
+            <div class="col-md-2">
+                <select name="category" class="form-select">
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="priority" class="form-select">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Add Task</button>
+            </div>
+        </form>
 
         <!-- Task List -->
-        <div class="mt-4">
-            {% if tasks %}
-                <ul id="taskList" class="list-unstyled">
-                    {% for task in tasks %}
-                        <li class="task-list-item">
-                            <div>
-                                <strong>Task:</strong> {{ task.name }} <br>
-                                <small>
-                                    <strong>Category:</strong> {{ task.category }} |
-                                    <strong>Priority:</strong> {{ task.priority }} |
-                                    <strong>Status:</strong> {{ task.status }}
-                                </small>
-                            </div>
-                            <div class="task-actions">
-                                <a href="/update/{{ loop.index0 }}" class="btn btn-success btn-sm">Mark as Completed</a>
-                                <a href="/delete/{{ loop.index0 }}" class="btn btn-danger btn-sm delete-task">Delete</a>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted text-center">No tasks available. Add a new task above!</p>
-            {% endif %}
-        </div>
+        {% if tasks %}
+            <ul id="taskList" class="list-unstyled">
+                {% for task in tasks %}
+                    <li class="task-list-item {% if task.status == 'Completed' %}completed{% endif %}">
+                        <div>
+                            <strong>Task:</strong> {{ task.name }}<br>
+                            <small>
+                                <strong>Category:</strong> {{ task.category }} |
+                                <strong>Priority:</strong> {{ task.priority }} |
+                                <strong>Date:</strong> {{ task.date }} |
+                                <strong>Status:</strong> {{ task.status }}
+                            </small>
+                        </div>
+                        <div class="task-actions">
+                            {% if task.status != 'Completed' %}
+                                <a href="/update/{{ loop.index0 }}" class="btn btn-success btn-sm">Mark Completed</a>
+                            {% endif %}
+                            <a href="/delete/{{ loop.index0 }}" class="btn btn-danger btn-sm delete-task">Delete</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted text-center">No tasks available. Add a new task above!</p>
+        {% endif %}
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="/static/js/app.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
